@@ -27,6 +27,19 @@ func initialModel() model {
 	}
 }
 
+var newTask string
+
+func (m model) NewTask(newTask string) tea.Model {
+	fmt.Println("\n\n\nPlease enter your new task:")
+
+	fmt.Println(newTask)
+
+	//choices[4] = newTask
+	return model{
+		choices: []string{"Eat ass", "sk8 fast", newTask},
+	}
+}
+
 // Can return a command (tea.Cmd) but for now means "no command"
 func (m model) Init() tea.Cmd {
 	// returns 'nil', which means "no I/O" right now
@@ -46,17 +59,17 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		// Quits program
 		case "ctrl+c", "q":
-			fmt.Println("bye bye")
+			fmt.Println("\n\nOk bye bye!")
 			return m, tea.Quit
 
 		// Moves curser up
-		case "up", "k":
+		case "up":
 			if m.cursor > 0 {
 				m.cursor--
 			}
 
 		//Moves curser down
-		case "down", "j":
+		case "down":
 			if m.cursor < len(m.choices)-1 {
 				m.cursor++
 			}
@@ -69,6 +82,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			} else {
 				m.selected[m.cursor] = struct{}{}
 			}
+
+		//Add a new item to the list
+		case "n":
+			fmt.Println("you pressed n")
+			NewTask("This is a new task")
+
 		}
 	}
 
@@ -96,10 +115,13 @@ func (m model) View() string {
 		s += fmt.Sprintf("%s [%s] %s\n", cursor, checked, choice)
 	}
 	// The footer
-	s += "\nPress q to quit.\n"
+	s += "Press 'space' to select a task and arrows to navigate"
+	helpBar := "\n\n\n\n\n\nFor real tho bruv"
+
+	//helpView := m.help.View(m.keys)
 
 	// Sends the UI for rendering
-	return s
+	return s + helpBar
 }
 
 func main() {
